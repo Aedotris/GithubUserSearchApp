@@ -1,113 +1,126 @@
-import Image from "next/image";
+"use client";
+import { useState, useEffect } from 'react';
+import { FaMapMarkerAlt, FaLink, FaTwitter, FaBuilding } from 'react-icons/fa';
+
+interface GitHubUser {
+  login: string;
+  avatar_url: string;
+  name: string;
+  bio: string;
+  public_repos: number;
+  followers: number;
+  following: number;
+  location: string;
+  blog: string;
+  twitter_username: string;
+  company: string;
+  created_at: string;
+}
 
 export default function Home() {
+  const [username, setUsername] = useState('');
+  const [user, setUser] = useState<GitHubUser | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  const fetchUser = async () => {
+    if (username) {
+      const res = await fetch(`https://api.github.com/users/${username}`);
+      const data: GitHubUser = await res.json();
+      setUser(data);
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div className={`flex flex-col items-center min-h-screen p-6 transition-all ${isDarkMode ? 'bg-dark-blue text-white' : 'bg-light-bg text-dark-text'} font-sans`}>
+      <header className="w-full max-w-xl flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold">devfinder</h1>
+        <button 
+          onClick={() => setIsDarkMode(!isDarkMode)} 
+          className="text-sm font-bold flex items-center"
+        >
+          {isDarkMode ? 'LIGHT' : 'DARK'}
+          <span className="ml-2">{isDarkMode ? '🌞' : '🌜'}</span>
+        </button>
+      </header>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <div className={`relative w-full max-w-xl mb-8 ${isDarkMode ? 'bg-dark-card' : 'bg-light-card'} rounded-lg`}>
+        <input 
+          type="text" 
+          placeholder="Search GitHub username…" 
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className={`w-full rounded-lg p-4 pl-12 outline-none transition-all ${isDarkMode ? 'bg-dark-card text-white placeholder-gray-text' : 'bg-light-card text-dark-text placeholder-gray-text'}`}
         />
+        <svg xmlns="http://www.w3.org/2000/svg" className={`absolute left-4 top-4 h-6 w-6 ${isDarkMode ? 'text-light-blue' : 'text-dark-text'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 10-14 0 7 7 0 0014 0z" />
+        </svg>
+        <button 
+          onClick={fetchUser} 
+          className={`absolute right-4 top-2 ${isDarkMode ? 'bg-light-blue text-white' : 'bg-dark-text text-white'} rounded-lg px-4 py-2 text-sm font-bold`}
+        >
+          Search
+        </button>
       </div>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      {user && (
+        <div className={`rounded-lg p-8 w-full max-w-xl transition-all ${isDarkMode ? 'bg-dark-card' : 'bg-light-card'}`}>
+          <div className="flex flex-col md:flex-row items-center mb-6">
+            <img src={user.avatar_url} alt={user.name} className="rounded-full w-24 h-24 md:w-32 md:h-32 mr-4" />
+            <div className="text-center md:text-left">
+              <h2 className="text-xl font-bold">{user.name}</h2>
+              <p className={`mt-2 ${isDarkMode ? 'text-light-blue' : 'text-dark-text'}`}>@{user.login}</p>
+              <p className="mt-2 text-gray-text">{user.bio || "This profile has no bio"}</p>
+            </div>
+          </div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+          <div className={`rounded-lg p-4 flex flex-col md:flex-row justify-between mb-6 text-center transition-all ${isDarkMode ? 'bg-dark-blue' : 'bg-light-bg'}`}>
+            <div className="mb-4 md:mb-0">
+              <p className="text-gray-text">Repos</p>
+              <p className="text-lg font-bold">{user.public_repos}</p>
+            </div>
+            <div className="mb-4 md:mb-0">
+              <p className="text-gray-text">Followers</p>
+              <p className="text-lg font-bold">{user.followers}</p>
+            </div>
+            <div>
+              <p className="text-gray-text">Following</p>
+              <p className="text-lg font-bold">{user.following}</p>
+            </div>
+          </div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+          <div className="flex flex-col md:flex-row md:justify-between text-gray-text">
+            {/* Left Column: Location and Blog */}
+            <div className="flex flex-col md:w-1/2 space-y-2 mb-4 md:mb-0 items-center md:items-start">
+              <p className="flex items-center">
+                <FaMapMarkerAlt className="mr-2" /> {user.location || "Not Available"}
+              </p>
+              <p className="flex items-center">
+                <FaLink className="mr-2" />
+                {user.blog ? <a href={user.blog} className="hover:underline">{user.blog}</a> : "Not Available"}
+              </p>
+            </div>
+            {/* Right Column: Twitter and Company */}
+            <div className="flex flex-col md:w-1/2 space-y-2 items-center md:items-end">
+              <p className="flex items-center">
+                <FaTwitter className="mr-2" /> {user.twitter_username ? `@${user.twitter_username}` : "Not Available"}
+              </p>
+              <p className="flex items-center">
+                <FaBuilding className="mr-2" /> {user.company || "Not Available"}
+              </p>
+            </div>
+          </div>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          <p className="text-gray-text text-sm mt-6">Joined {new Date(user.created_at).toLocaleDateString()}</p>
+        </div>
+      )}
+    </div>
   );
 }

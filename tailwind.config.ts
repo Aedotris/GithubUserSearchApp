@@ -1,20 +1,25 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    './app/**/*.{js,ts,jsx,tsx}',
   ],
+  darkMode: 'class', // Thêm dòng này
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      colors: {
+        'dark-blue': '#141D2F',
+        'dark-card': '#1E2A47',
+        'light-blue': '#0079FF',
+        'gray-text': '#697C9A',
+        'white-text': '#FFFFFF',
+        'light-bg': '#F6F8FF',
+        'light-card': '#FEFEFE',
+        'dark-text': '#2B3442',
+      },
+      fontFamily: {
+        sans: ['Space Mono', 'monospace'],
       },
     },
   },
   plugins: [],
-};
-export default config;
+}
